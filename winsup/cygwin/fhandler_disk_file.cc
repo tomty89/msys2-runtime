@@ -1200,12 +1200,11 @@ fhandler_disk_file::link (const char *newpath)
 
   if (fake_hardlinks == FHARD_always)
     {
-      tmp_pathbuf tp;
-      char *w_newpath;
-      char *w_oldpath;
-      stpcpy (w_newpath = tp.c_get (), newpc.get_win32());
-      stpcpy (w_oldpath = tp.c_get (), pc.get_win32());
-      if (!CopyFile (w_oldpath, w_newpath, TRUE))
+      WCHAR w_newpath[newpc.get_wide_win32_path_len() + 1];
+      WCHAR w_oldpath[pc.get_wide_win32_path_len() + 1];
+      newpc.get_wide_win32_path(w_newpath);
+      pc.get_wide_win32_path(w_oldpath);
+      if (!CopyFileW (w_oldpath, w_newpath, TRUE))
         {
           __seterrno ();
           return - 1;
@@ -1273,12 +1272,11 @@ fhandler_disk_file::link (const char *newpath)
             }
           else
             {
-              tmp_pathbuf tp;
-              char *w_newpath;
-              char *w_oldpath;
-              stpcpy (w_newpath = tp.c_get (), newpc.get_win32());
-              stpcpy (w_oldpath = tp.c_get (), pc.get_win32());
-              if (!CopyFile (w_oldpath, w_newpath, TRUE))
+              WCHAR w_newpath[newpc.get_wide_win32_path_len() + 1];
+              WCHAR w_oldpath[pc.get_wide_win32_path_len() + 1];
+              newpc.get_wide_win32_path(w_newpath);
+              pc.get_wide_win32_path(w_oldpath);
+              if (!CopyFileW (w_oldpath, w_newpath, TRUE))
                 {
                   __seterrno ();
                   return - 1;
