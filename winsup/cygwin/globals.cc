@@ -58,6 +58,14 @@ enum winsym_t
   WSYM_nfs
 };
 
+/* Should hardlinks be faked.  The value is set depending on the
+   "fakehardlinks" setting of the CYGWIN environment variable. */
+enum fakehard_t {
+  FHARD_never = 0,
+  FHARD_ondemand,
+  FHARD_always
+};
+
 exit_states NO_COPY exit_state;
 
 /* Set in init.cc.  Used to check if Cygwin DLL is dynamically loaded. */
@@ -71,6 +79,7 @@ bool pipe_byte;
 bool reset_com;
 bool wincmdln;
 winsym_t allow_winsymlinks = WSYM_sysfile;
+fakehard_t fake_hardlinks = FHARD_ondemand;
 
 bool NO_COPY in_forkee;
 

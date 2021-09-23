@@ -1187,6 +1187,16 @@ fhandler_disk_file::link (const char *newpath)
       return -1;
     }
 
+  if (fake_hardlinks == FHARD_always)
+    {
+      if (!CopyFile (pc, newpc, TRUE))
+        {
+          __seterrno ();
+          return - 1;
+        }
+      return 0;
+    }
+
   char new_buf[nlen + 5];
   if (!newpc.error)
     {
@@ -1239,8 +1249,22 @@ fhandler_disk_file::link (const char *newpath)
     {
       if (status == STATUS_INVALID_DEVICE_REQUEST
 	  || status == STATUS_NOT_SUPPORTED)
-	/* FS doesn't support hard links.  Linux returns EPERM. */
-	set_errno (EPERM);
+        {
+          if (fake_hardlinks == FHARD_never)
+            {
+              /* FS doesn't support hard links.  Linux returns EPERM. */
+              set_errno (EPERM);
+            }
+          else
+            {
+              if (!CopyFile (pc, newpc, TRUE))
+                {
+                  __seterrno ();
+                  return - 1;
+                }
+              return 0;
+            }
+        }
       else
 	__seterrno_from_nt_status (status);
       return -1;

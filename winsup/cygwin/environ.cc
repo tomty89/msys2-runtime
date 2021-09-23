@@ -88,6 +88,19 @@ set_winsymlinks (const char *buf)
 			? WSYM_nativestrict : WSYM_native;
 }
 
+static void
+set_fakehardlinks (const char *buf)
+{
+  if (!buf || !*buf)
+    fake_hardlinks = FHARD_ondemand;
+  else if (ascii_strncasematch (buf, "never", 5))
+    fake_hardlinks = FHARD_never;
+  else if (ascii_strncasematch (buf, "always", 6))
+    fake_hardlinks = FHARD_always;
+  else
+    fake_hardlinks = FHARD_ondemand;
+}
+
 /* The structure below is used to set up an array which is used to
    parse the CYGWIN environment variable or, if enabled, options from
    the registry.  */
@@ -120,6 +133,7 @@ static struct parse_thing
   {"reset_com", {&reset_com}, setbool, NULL, {{false}, {true}}},
   {"wincmdln", {&wincmdln}, setbool, NULL, {{false}, {true}}},
   {"winsymlinks", {func: set_winsymlinks}, isfunc, NULL, {{0}, {0}}},
+  {"fakehardlinks", {func: set_fakehardlinks}, isfunc, NULL, {{0}, {0}}},
   {NULL, {0}, setdword, 0, {{0}, {0}}}
 };
 
